@@ -1,0 +1,8 @@
+steps:
+  - uses: actions/checkout@v4
+
+  - uses: fixpoint/azblob-generate-static-index@v1
+    with:
+      connection-string: ${{ secrets.https://usmtstorageaccount.blob.core.windows.net/downloadcenter?sp=r&st=2025-09-04T17:17:24Z&se=2025-09-05T01:32:24Z&spr=https&sv=2024-11-04&sr=c&sig=qbX44LL3f5NIcG6BFP%2FgJyEJKwijcn5DIxSmCguYRZM%3D }}
+      prefix: downloadcenter/_SD
+      overwrite: true
