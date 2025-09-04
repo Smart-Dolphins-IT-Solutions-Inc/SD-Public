@@ -3,6 +3,6 @@ steps:
 
   - uses: fixpoint/azblob-generate-static-index@v1
     with:
-      connection-string: ${{ secrets.https://usmtstorageaccount.blob.core.windows.net/downloadcenter?sp=r&st=2025-09-04T17:17:24Z&se=2025-09-05T01:32:24Z&spr=https&sv=2024-11-04&sr=c&sig=qbX44LL3f5NIcG6BFP%2FgJyEJKwijcn5DIxSmCguYRZM%3D }}
+      connection-string: ${{ secrets.DefaultEndpointsProtocol=https;AccountName=usmtstorageaccount;AccountKey=Vfcphgbx5kpfIC2oI/b5+MSj8YlgbfGtFZE47ucP9lcziWZ03YKFaiyEhiYOvgqbUvI3WmEoCjOiY5GIwfTIWg==;BlobEndpoint=https://usmtstorageaccount.blob.core.windows.net/;QueueEndpoint=https://usmtstorageaccount.queue.core.windows.net/;TableEndpoint=https://usmtstorageaccount.table.core.windows.net/;FileEndpoint=https://usmtstorageaccount.file.core.windows.net/; }}
       prefix: downloadcenter/_SD
       overwrite: true
