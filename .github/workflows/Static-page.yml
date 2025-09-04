@@ -1,7 +1,10 @@
 #GitHub Actions demo to create a directory listing for the repository files to publish to GitHub Pages
 
-name: Demo Action
-
+name: Static Page Generator
+jobs:
+  deploy:
+    environment:
+      name: github-pages
 on:
   push:
     branches: [ "main" ]
