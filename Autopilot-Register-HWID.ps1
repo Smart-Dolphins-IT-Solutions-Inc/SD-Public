@@ -12,17 +12,6 @@ $env:Path += ";C:\Program Files\WindowsPowerShell\Scripts"
 Install-Module -Name Microsoft.Graph.DeviceManagement -Force -ErrorAction Stop
 Import-Module Microsoft.Graph.DeviceManagement -Force -ErrorAction Stop
 Install-Script -Name Get-WindowsAutopilotInfo -Force -ErrorAction Stop
-#Sign in to Microsoft Graph with Device Management permissions
-Write-Host "===============================" -ForegroundColor Yellow
-Write-Host "Connecting to Microsoft Graph, please sign in with an Intune/Device Administrator account." -ForegroundColor Green
-Write-Host "===============================" -ForegroundColor Yellow
-Connect-MgGraph -Scopes `
-"DeviceManagementServiceConfig.ReadWrite.All",
-"DeviceManagementManagedDevices.ReadWrite.All",
-"Device.ReadWrite.All",
-"Group.ReadWrite.All",
-"GroupMember.ReadWrite.All" `
--UseDeviceAuthentication -NoWelcome -ErrorAction Stop
 #Register and Dump Hardware ID Locally
 Write-Host "Registering device with Autopilot and dumping hardware hash to C:\AutopilotHWID.csv..." -ForegroundColor Green
 Get-WindowsAutopilotInfo -Online -OutputFile C:\AutopilotHWID.csv -ErrorAction Stop
