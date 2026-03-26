@@ -1,10 +1,12 @@
 #Requires -RunAsAdministrator
 #Config Nuget Repository
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-Find-PackageProvider -Name NuGet | Install-PackageProvider -Force
+Write-Host "Configuring NuGet Repository for PowerShell Gallery..." -ForegroundColor Green 
+Find-PackageProvider -Name NuGet | Install-PackageProvider -Force -ErrorAction SilentlyContinue
 Register-PackageSource -Name nuget.org -Location https://www.nuget.org/api/v2 -ProviderName NuGet -ErrorAction SilentlyContinue
 Set-PackageSource -Name nuget.org -Trusted -ErrorAction SilentlyContinue
 #Get registration script
+Write-Host "Installing Microsoft Graph PowerShell Module..." -ForegroundColor Green
 $env:Path += ";C:\Program Files\WindowsPowerShell\Scripts"
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Install-Module -Name Microsoft.Graph -Force -ErrorAction Stop
@@ -19,6 +21,7 @@ Connect-MgGraph -Scopes `
 "DeviceManagementManagedDevices.ReadWrite.All" `
 -UseDeviceAuthentication -NoWelcome -ErrorAction Stop
 #Register and Dump Hardware ID Locally
+Write-Host "Registering device with Autopilot and dumping hardware hash to C:\AutopilotHWID.csv..." -ForegroundColor Green
 Get-WindowsAutopilotInfo -Online -OutputFile C:\AutopilotHWID.csv -ErrorAction Stop
 #Wait for Input to reboot
 Write-Host "Verify that the hardware hash uploaded successfully and the device is showing in Intune (will show as has ID for name)." -ForegroundColor Red
