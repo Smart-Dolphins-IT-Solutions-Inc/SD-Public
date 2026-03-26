@@ -9,7 +9,7 @@ Set-PackageSource -Name nuget.org -Trusted -ErrorAction SilentlyContinue
 Write-Host "Installing Microsoft Graph PowerShell Module..." -ForegroundColor Green
 $env:Path += ";C:\Program Files\WindowsPowerShell\Scripts"
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-Install-Module -Name Microsoft.Graph -Force -ErrorAction Stop
+Install-Module -Name Microsoft.Graph.DeviceManagement -Force -ErrorAction Stop
 Import-Module Microsoft.Graph.DeviceManagement -Force -ErrorAction Stop
 Install-Script -Name Get-WindowsAutopilotInfo -Force -ErrorAction Stop
 #Sign in to Microsoft Graph with Device Management permissions
