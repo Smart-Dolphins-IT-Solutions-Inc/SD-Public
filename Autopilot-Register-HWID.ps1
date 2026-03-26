@@ -15,7 +15,7 @@ Write-Host "===============================" -ForegroundColor Yellow
 Connect-MgGraph -Scopes `
 "DeviceManagementServiceConfig.ReadWrite.All",
 "DeviceManagementManagedDevices.ReadWrite.All" `
--UseDeviceAuthentication -NoWelcome
+-UseDeviceAuthentication -NoWelcome -ErrorAction Stop
 #Register and Dump Hardware ID Locally
 Get-WindowsAutopilotInfo -Online -OutputFile C:\AutopilotHWID.csv -ErrorAction Stop
 #Wait for Input to reboot
@@ -26,7 +26,7 @@ Write-Host "Once IDs are registered, Add to Autopilot Onboarding group and assig
 $yes = New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", "Reboot the system."
 $no = New-Object System.Management.Automation.Host.ChoiceDescription "&No", "Abort Reboot and resubmit HWIDs."
 $abort = New-Object System.Management.Automation.Host.ChoiceDescription "&Abort", "Abort the script."
-$options = [System.Management.Automation.Host.ChoiceDescription]($yes, $no, $abort)
+$options = [System.Management.Automation.Host.ChoiceDescription[]]@($yes, $no, $abort)
 
 # Define the title, message, and default choice (0 for Yes, 1 for No, 2 to Abort)
 $title = "Ready for reboot into Autopilot?"
@@ -47,12 +47,23 @@ switch ($result) {
         Get-WindowsAutopilotInfo -Online -ErrorAction Stop
         Write-Host "Hardware IDs resubmitted, please verify the device is showing in Intune and assigned to Autopilot Onboarding group and Primary User." -ForegroundColor Green
         #Reprompt for reboot
-        $options = [System.Management.Automation.Host.ChoiceDescription]($yes, $abort)
+        $options = [System.Management.Automation.Host.ChoiceDescription[]]@($yes, $abort)
         $result = $host.ui.PromptForChoice($title, $message, $options, $defaultChoice)
+        switch ($result) {
+            0 {
+                Write-Host "Rebooting system and initiating Autopilot Onboarding..." -ForegroundColor Green
+                Restart-Computer
+            }
+            1 {
+                Write-Host "Aborting script execution. Please reboot system and verify endpoint manually before running the script again, system may register after reboot." -ForegroundColor Red
+                Write-Host "For manual registration, see hardware IDs in C:\AutopilotHWID.csv and upload to Intune." -ForegroundColor Red
+                exit
+            }
+        }
     }
     2 {
         Write-Host "Aborting script execution. Please reboot system and verify endpoint manually before running the script again, system may register after reboot." -ForegroundColor Red
         Write-Host "For manual registration, see hardware IDs in C:\AutopilotHWID.csv and upload to Intune." -ForegroundColor Red
-        End
+        exit
     }
 }
