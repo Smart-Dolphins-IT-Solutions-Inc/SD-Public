@@ -2,7 +2,7 @@
 #Config Nuget Repository
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 Write-Host "Configuring NuGet Repository for PowerShell Gallery..." -ForegroundColor Green 
-Find-PackageProvider -Name NuGet | Install-PackageProvider -Force -ErrorAction SilentlyContinue
+Find-PackageProvider -Name "NuGet" | Install-PackageProvider -Force -ErrorAction SilentlyContinue
 Register-PackageSource -Name nuget.org -Location https://www.nuget.org/api/v2 -ProviderName NuGet -ErrorAction SilentlyContinue
 Set-PackageSource -Name nuget.org -Trusted -ErrorAction SilentlyContinue
 #Prompt for Autopilot Registration or ImmyBot Installation
