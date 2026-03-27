@@ -6,6 +6,7 @@ Find-PackageProvider -Name "NuGet" | Install-PackageProvider -Force -ErrorAction
 Register-PackageSource -Name nuget.org -Location https://www.nuget.org/api/v2 -ProviderName NuGet -ErrorAction SilentlyContinue
 Set-PackageSource -Name nuget.org -Trusted -ErrorAction SilentlyContinue
 #Prompt for Autopilot Registration or ImmyBot Installation
+Write-Host "-----------------------------------------------" -ForegroundColor Red
 $autopilot = New-Object System.Management.Automation.Host.ChoiceDescription "&Autopilot", "Register this device with Autopilot."
 $immy = New-Object System.Management.Automation.Host.ChoiceDescription "&ImmyBot", "No Autopilot for you, install generic ImmyBot Agent."
 $options1 = [System.Management.Automation.Host.ChoiceDescription[]]@($autopilot, $immy)
@@ -13,11 +14,11 @@ $options1 = [System.Management.Automation.Host.ChoiceDescription[]]@($autopilot,
 $title1 = "Register device for Autopilot or Install ImmyBot Generic Agent?"
 $message1 = "Pick your path for this device, Autopilot registration is recommended for managed Tenants, ImmyBot is recommended for clients without Intune Registration Policies (No BusinessPremium)."
 $defaultChoice1 = 0 # Default to Autopilot
-$result1 = $host.ui.PromptForChoice($title1, $message1, $options1, $defaultChoice1) 
+$result1 = $host.ui.PromptForChoice($title1, $message1, $options1, $defaultChoice1)
 #Process the result using a switch statement
 switch ($result1) {
     0 {
-        Write-Host "Registering device with Autopilot..." -ForegroundColor Green
+        Write-Host "Registering device with Autopilot..." -ForegroundColor Yellow
     }
     1 {
         Write-Host "Deploying ImmyBot Generic Agent..." -ForegroundColor Yellow
@@ -29,18 +30,18 @@ switch ($result1) {
     }
 }
 #Get registration script
-Write-Host "Installing Microsoft Graph PowerShell Module..." -ForegroundColor Green
+Write-Host "Installing Microsoft Graph PowerShell Module..." -ForegroundColor Yellow
 $env:Path += ";C:\Program Files\WindowsPowerShell\Scripts"
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Install-Module -Name Microsoft.Graph.DeviceManagement -Force -ErrorAction Stop
 Import-Module Microsoft.Graph.DeviceManagement -Force -ErrorAction Stop
 Install-Script -Name Get-WindowsAutopilotInfo -Force -ErrorAction Stop
 #Register and Dump Hardware ID Locally
-Write-Host "Registering device with Autopilot and dumping hardware hash to C:\AutopilotHWID.csv..." -ForegroundColor Green
+Write-Host "Registering device with Autopilot and dumping hardware hash to C:\AutopilotHWID.csv..." -ForegroundColor Yellow
 Get-WindowsAutopilotInfo -Online -OutputFile C:\AutopilotHWID.csv -ErrorAction Stop
 #Wait for Input to reboot
-Write-Host "Verify that the hardware hash uploaded successfully and the device is showing in Intune (will show as has ID for name)." -ForegroundColor Red
-Write-Host "Once IDs are registered, Add to Autopilot Onboarding group and assign Primary User." -ForegroundColor Red
+Write-Host "Verify that the hardware hash uploaded successfully and the device is showing in Intune (will show as has ID for name)." -ForegroundColor Green
+Write-Host "Once IDs are registered, Add to Autopilot Onboarding group and assign Primary User." -ForegroundColor Green
 Write-Host "----------------------------------------------------" -ForegroundColor Red
 
 #Prompt for reboot
@@ -61,7 +62,7 @@ $result = $host.ui.PromptForChoice($title, $message, $options, $defaultChoice)
 # Process the result using a switch statement
 switch ($result) {
     0 {
-        Write-Host "Rebooting system and initiating Autopilot Onboarding..." -ForegroundColor Green
+        Write-Host "Rebooting system and initiating Autopilot Onboarding..." -ForegroundColor Yellow
         Restart-Computer
     }
     1 {
@@ -73,7 +74,7 @@ switch ($result) {
         $result = $host.ui.PromptForChoice($title, $message, $options, $defaultChoice)
         switch ($result) {
             0 {
-                Write-Host "Rebooting system and initiating Autopilot Onboarding..." -ForegroundColor Green
+                Write-Host "Rebooting system and initiating Autopilot Onboarding..." -ForegroundColor Yellow
                 Restart-Computer
             }
             1 {
