@@ -10,12 +10,12 @@ $autopilot = New-Object System.Management.Automation.Host.ChoiceDescription "&Au
 $immy = New-Object System.Management.Automation.Host.ChoiceDescription "&ImmyBot", "No Autopilot for you, install generic ImmyBot Agent."
 $options1 = [System.Management.Automation.Host.ChoiceDescription[]]@($autopilot, $immy)
 # Define the title, message, and default choice (0 for Autopilot, 1 for Immybot)
-$title = "Configure Autopilot or Install ImmyBot Generic Agent?"
-$message = "Pick your path for this device, Autopilot registration is recommended for managed Tenants, ImmyBot is recommended for clients with Intune Registration Policies (No BusinessPremium)."
-$defaultChoice = 0 # Default to Autopilot
-$result = $host.ui.PromptForChoice($title, $message, $options, $defaultChoice)
+$title1 = "Register device for Autopilot or Install ImmyBot Generic Agent?"
+$message1 = "Pick your path for this device, Autopilot registration is recommended for managed Tenants, ImmyBot is recommended for clients without Intune Registration Policies (No BusinessPremium)."
+$defaultChoice1 = 0 # Default to Autopilot
+$result1 = $host.ui.PromptForChoice($title1, $message1, $options1, $defaultChoice1) 
 #Process the result using a switch statement
-switch ($result) {
+switch ($result1) {
     0 {
         Write-Host "Registering device with Autopilot..." -ForegroundColor Green
     }
@@ -24,6 +24,7 @@ switch ($result) {
         # Add ImmyBot deployment logic here
         $ErrorActionPreference = "Stop";$url = 'https://smartdolphins.immy.bot/plugins/api/v1/1/installer/latest-download';$InstallerFile = [io.path]::ChangeExtension([io.path]::GetTempFileName(), ".msi");(New-Object System.Net.WebClient).DownloadFile($url, $InstallerFile);$InstallerLogFile = [io.path]::ChangeExtension([io.path]::GetTempFileName(), ".log");$Arguments = " /c msiexec /i `"$InstallerFile`" /qn /norestart /l*v `"$InstallerLogFile`" REBOOT=REALLYSUPPRESS ID=8397c9e6-3222-4d35-8dec-0d66ee5c78f4 ADDR=https://smartdolphins.immy.bot/plugins/api/v1/1 KEY=qJDNjWrw4vbQ94ChOzpFrJqBJj/S3nRNooaFQ3ryf2k=";Write-Host "InstallerLogFile: $InstallerLogFile";$Process = Start-Process -Wait cmd -ArgumentList $Arguments -Passthru;if ($Process.ExitCode -ne 0) {    Get-Content $InstallerLogFile -ErrorAction SilentlyContinue | Select-Object -Last 200;    throw "Exit Code: $($Process.ExitCode), ComputerName: $($env:ComputerName)"}else {    Write-Host "Exit Code: $($Process.ExitCode)";    Write-Host "ComputerName: $($env:ComputerName)";}
         Write-Host "ImmyBot Generic Agent deployed successfully, continue with OOBE." -ForegroundColor Green
+        Write-Host "After a couple of minutes the system should show up in the ImmyBot dashboard with hostname: $($env:ComputerName)" -ForegroundColor Green
         Exit
     }
 }
