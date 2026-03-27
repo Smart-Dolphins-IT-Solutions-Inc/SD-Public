@@ -23,7 +23,7 @@ switch ($result) {
         Write-Host "Deploying ImmyBot Generic Agent..." -ForegroundColor Yellow
         # Add ImmyBot deployment logic here
         $ErrorActionPreference = "Stop";$url = 'https://smartdolphins.immy.bot/plugins/api/v1/1/installer/latest-download';$InstallerFile = [io.path]::ChangeExtension([io.path]::GetTempFileName(), ".msi");(New-Object System.Net.WebClient).DownloadFile($url, $InstallerFile);$InstallerLogFile = [io.path]::ChangeExtension([io.path]::GetTempFileName(), ".log");$Arguments = " /c msiexec /i `"$InstallerFile`" /qn /norestart /l*v `"$InstallerLogFile`" REBOOT=REALLYSUPPRESS ID=8397c9e6-3222-4d35-8dec-0d66ee5c78f4 ADDR=https://smartdolphins.immy.bot/plugins/api/v1/1 KEY=qJDNjWrw4vbQ94ChOzpFrJqBJj/S3nRNooaFQ3ryf2k=";Write-Host "InstallerLogFile: $InstallerLogFile";$Process = Start-Process -Wait cmd -ArgumentList $Arguments -Passthru;if ($Process.ExitCode -ne 0) {    Get-Content $InstallerLogFile -ErrorAction SilentlyContinue | Select-Object -Last 200;    throw "Exit Code: $($Process.ExitCode), ComputerName: $($env:ComputerName)"}else {    Write-Host "Exit Code: $($Process.ExitCode)";    Write-Host "ComputerName: $($env:ComputerName)";}
-        Write-Host "ImmyBot Generic Agent deployed successfully." -ForegroundColor Green
+        Write-Host "ImmyBot Generic Agent deployed successfully, continue with OOBE." -ForegroundColor Green
         Exit
     }
 }
